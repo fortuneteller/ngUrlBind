@@ -10,7 +10,7 @@
   }
 }(this, function() {
 
-return angular.module('ngUrlBind', []).factory('ngUrlBind', ['$location', function($location) {
+return angular.module('ngUrlBind', []).factory('ngUrlBind', function($location) {
   return function(scope, property) {
     if ($location.search()[property]) {
       if (typeof scope[property] === 'object') {
@@ -34,9 +34,11 @@ return angular.module('ngUrlBind', []).factory('ngUrlBind', ['$location', functi
       if (typeof scope[property] === 'object') {
         newObject = JSON.stringify(JSURL.parse($location.search()[property]));
         oldObject = angular.toJson(scope[property]);
-        if (newObject !== oldObject) {
-          return angular.extend(scope[property], JSON.parse(newObject));
-        }
+          if (newObject !== oldObject &&  typeof newObject != 'undefined') {
+              return angular.extend(scope[property], JSON.parse(newObject));
+          }else if(typeof newObject == 'undefined'){
+              scope[property] = {};
+          }
       } else {
         newValue = JSURL.parse($location.search()[property]);
         oldValue = scope[property];
@@ -46,7 +48,8 @@ return angular.module('ngUrlBind', []).factory('ngUrlBind', ['$location', functi
       }
     });
   };
-}]);
+});
 ;
 
 }));
+
